@@ -116,9 +116,9 @@ function bullets(s, items, x, y, w, opt = {}) {
   head(s, "現状認識", "クイーンシルバーの売上は、全盛期の半分以下", "そして、55年間この石鹸を焚き続けてきたミクニの釜が、稼働を保てない水準に近づいている。");
 
   card(s, M, 2.5, 4.5, 3.6, { fill: NAVY, line: NAVY, shadow: false });
-  s.addText("全盛期比", { x: M + 0.42, y: 2.85, w: 3.6, h: 0.35, fontSize: 13, color: GOLD_L, fontFace: JP, bold: true, isTextBox: true, margin: 0 });
-  s.addText("50%", { x: M + 0.34, y: 3.22, w: 3.9, h: 1.35, fontSize: 90, bold: true, color: WHITE, fontFace: NUM, isTextBox: true, margin: 0, valign: "middle" });
-  s.addText("以下", { x: M + 0.42, y: 4.60, w: 3.6, h: 0.4, fontSize: 18, bold: true, color: WHITE, fontFace: JP, isTextBox: true, margin: 0 });
+  s.addText("全盛期比", { x: M + 0.42, y: 2.80, w: 3.6, h: 0.32, fontSize: 13, color: GOLD_L, fontFace: JP, bold: true, isTextBox: true, margin: 0 });
+  s.addText("50%", { x: M + 0.34, y: 3.10, w: 3.9, h: 1.5, fontSize: 80, bold: true, color: WHITE, fontFace: NUM, isTextBox: true, margin: 0, valign: "middle" });
+  s.addText("以下", { x: M + 0.42, y: 4.64, w: 3.6, h: 0.38, fontSize: 18, bold: true, color: WHITE, fontFace: JP, isTextBox: true, margin: 0 });
   s.addText("創業以来55年、アルソアの命であり続けた石鹸の現在地。", { x: M + 0.42, y: 5.12, w: 3.66, h: 0.8, fontSize: 12, color: "B9C2D2", fontFace: JP, lineSpacing: 18, isTextBox: true, margin: 0 });
 
   s.addChart(pres.ChartType.bar, [{ name: "売上インデックス", labels: ["全盛期", "現　在"], values: [100, 48] }], {
@@ -140,7 +140,7 @@ function bullets(s, items, x, y, w, opt = {}) {
 {
   const s = pres.addSlide();
   s.background = { color: SILVER };
-  head(s, "問題の再定義", "減ったのは「お客様の数」ではなく、石鹸の「担当面積」", "ラインナップが増えるほど、クイーンシルバーが洗う場所は狭くなっていった。");
+  head(s, "問題の再定義", "減ったのは「客数」ではなく、石鹸の「担当面積」", "ラインナップが増えるほど、クイーンシルバーが洗う場所は狭くなっていった。");
 
   const col = [
     { t: "かつて", sub: "洗面所の主役", c: GOLD, k: "1個で、家じゅうを洗っていた", list: ["顔も、体も、手も、家族も洗う", "浴室と洗面所の両方に置かれていた", "1世帯で年間に何個も減っていった"] },
