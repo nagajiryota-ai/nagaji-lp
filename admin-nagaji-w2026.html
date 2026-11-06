@@ -1,0 +1,1409 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>【長路専用】冬の健食キャンペーン2026 自動集計・管理ツール</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+:root {
+  --bg: #f6f8f6;
+  --card: #ffffff;
+  --fg: #1a241a;
+  --mute: #5a6b5a;
+  --brand: #2a4a2a;
+  --brand-light: #e8f0e8;
+  --accent: #b85d19;
+  --accent-bg: #fff4eb;
+  --line: #d4ddd4;
+  --danger: #c62828;
+  --danger-bg: #ffebee;
+  --ok: #1b5e20;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  padding-bottom: 130px;
+}
+header {
+  background: linear-gradient(135deg, #1a2744 0%, #2a4a2a 100%);
+  color: #fff;
+  padding: 18px 16px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+header h1 {
+  font-size: 18px;
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+header .sub {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-top: 3px;
+}
+.mode-tabs {
+  display: flex;
+  background: rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.mode-tab {
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 7px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.mode-tab.active {
+  background: #fff;
+  color: var(--brand);
+}
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 14px 12px;
+}
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.card-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--brand);
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--brand-light);
+  padding-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+label.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: var(--fg);
+}
+input[type="text"], textarea {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px 12px;
+  border: 1px solid #99a999;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--fg);
+  font-family: inherit;
+}
+input:focus, textarea:focus {
+  outline: 2px solid var(--brand);
+  border-color: var(--brand);
+}
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.filter-chip {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--fg);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.filter-chip.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+/* 月切替サブタブ */
+.sub-tabs {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.sub-tab {
+  border: 2px solid var(--brand);
+  background: #fff;
+  color: var(--brand);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.sub-tab.active {
+  background: var(--brand);
+  color: #fff;
+}
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.item-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+}
+.item-card.has-qty {
+  border: 2px solid var(--brand);
+  background: #fbfdfb;
+}
+.item-card.warn-qty {
+  border: 2px solid var(--danger);
+  background: var(--danger-bg);
+}
+.item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.item-name {
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 1.35;
+}
+.item-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+.badge-gift {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: bold;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid #f0c9a6;
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+.badge-note {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: bold;
+  background: #eef2ff;
+  color: #314899;
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+.item-price {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.months-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.month-box {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 6px;
+  text-align: center;
+  border: 1px solid #e1e8e1;
+}
+.month-box.active-m {
+  background: var(--brand-light);
+  border-color: var(--brand);
+}
+.month-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--mute);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.month-box.active-m .month-label {
+  color: var(--brand);
+}
+.m-tag-gift {
+  font-size: 10px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid #f0c9a6;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.m-tag-nogift {
+  font-size: 10px;
+  background: #eee;
+  color: #666;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+}
+.step-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #b5c4b5;
+  background: #fff;
+  color: var(--fg);
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  user-select: none;
+}
+.step-btn:active {
+  background: var(--brand);
+  color: #fff;
+}
+.qty-input {
+  width: 38px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  padding: 2px 0;
+  -moz-appearance: textfield;
+}
+.qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.item-foot {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--ok);
+  font-weight: bold;
+}
+.warn-msg {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--danger);
+  font-weight: bold;
+}
+/* 下部固定バー */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 2px solid var(--brand);
+  box-shadow: 0 -3px 12px rgba(0,0,0,0.12);
+  padding: 10px 12px;
+  z-index: 60;
+}
+.bottom-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.summary-months {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  font-size: 12px;
+  text-align: center;
+}
+.sum-cell {
+  background: var(--bg);
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+.sum-cell.total-cell {
+  background: var(--brand-light);
+  color: var(--brand);
+  font-weight: bold;
+}
+.sum-cell .lbl {
+  display: block;
+  font-size: 10.5px;
+  color: var(--mute);
+}
+.sum-cell .val {
+  font-size: 13.5px;
+  font-weight: bold;
+}
+.action-btns {
+  display: flex;
+  gap: 8px;
+}
+.btn-primary {
+  flex: 1;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn-secondary {
+  background: #fff;
+  color: var(--brand);
+  border: 2px solid var(--brand);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13.5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn-danger {
+  background: #fff;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+/* 集計管理テーブル */
+.table-wrap {
+  overflow-x: auto;
+}
+table.agg-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+table.agg-table th, table.agg-table td {
+  border: 1px solid #bbb;
+  padding: 8px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+table.agg-table th {
+  background: var(--brand-light);
+  color: var(--brand);
+  white-space: nowrap;
+}
+table.agg-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.month-cell-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.month-cell-item {
+  background: #f4f7f4;
+  border-left: 3px solid var(--brand);
+  padding: 3px 7px;
+  border-radius: 3px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.month-cell-item .gift-inline {
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: bold;
+  margin-left: 4px;
+}
+.month-sub-yen {
+  margin-top: 5px;
+  padding-top: 4px;
+  border-top: 1px dashed #ccc;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--mute);
+  text-align: right;
+}
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+@media (max-width: 680px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.kpi-box {
+  background: var(--brand-light);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+.kpi-box .k-lbl { font-size: 12px; color: var(--mute); }
+.kpi-box .k-val { font-size: 17px; font-weight: bold; color: var(--brand); margin-top: 2px; }
+.sync-status {
+  font-size: 12.5px;
+  color: var(--ok);
+  font-weight: bold;
+}
+.toast {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a241a;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 200;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+.toast[hidden] { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <h1>【長路専用】冬の健食キャンペーン2026 予約集計・管理ツール</h1>
+      <div class="sub">誰が・何月に・何を何個予約したかを自動集計＆Excel出力</div>
+    </div>
+    <div class="mode-tabs" id="modeTabs">
+      <button type="button" class="mode-tab active" data-mode="admin">予約・集計一覧 (<span id="orderCountBadge">0</span>名)</button>
+      <button type="button" class="mode-tab" data-mode="order">＋ 紙の注文書を手入力</button>
+    </div>
+  </div>
+</header>
+
+<div id="toast" class="toast" hidden></div>
+
+<main>
+  <!-- ==================== 集計・管理画面（メイン） ==================== -->
+  <section id="viewAdmin">
+    <div class="card">
+      <div class="card-title">
+        <div>
+          <span>全体の予約集計状況</span>
+          <span class="sync-status" id="syncStatus" style="margin-left:10px;">🔄 自動同期中...</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn-secondary" id="btnRefreshCloud">最新の注文を再読込</button>
+          <button type="button" class="btn-primary" id="btnExportExcel" style="flex:0 0 auto;padding:8px 16px;font-size:14px;">Excel集計表を出力（月別・個人別シートつき）</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-box">
+          <div class="k-lbl">予約人数</div>
+          <div class="k-val" id="kpiCount">0名</div>
+        </div>
+        <div class="kpi-box">
+          <div class="k-lbl">12月 合計</div>
+          <div class="k-val" id="kpiM12">¥0</div>
+        </div>
+        <div class="kpi-box">
+          <div class="k-lbl">1月 合計</div>
+          <div class="k-val" id="kpiM1">¥0</div>
+        </div>
+        <div class="kpi-box">
+          <div class="k-lbl">2月 合計</div>
+          <div class="k-val" id="kpiM2">¥0</div>
+        </div>
+        <div class="kpi-box" style="background:#dce8dc;">
+          <div class="k-lbl">3ヶ月総合計</div>
+          <div class="k-val" id="kpiTotal">¥0</div>
+        </div>
+      </div>
+
+      <!-- 表示切替サブタブ -->
+      <div class="sub-tabs" id="subTabs">
+        <button type="button" class="sub-tab active" data-sub="matrix">① 誰が・何月に・何を予約したか一覧（全体）</button>
+        <button type="button" class="sub-tab" data-sub="m12">② 12月の納品・手配リスト</button>
+        <button type="button" class="sub-tab" data-sub="m1">③ 1月の納品・手配リスト</button>
+        <button type="button" class="sub-tab" data-sub="m2">④ 2月の納品・手配リスト</button>
+        <button type="button" class="sub-tab" data-sub="prod">⑤ 品目別の月別発注合計</button>
+      </div>
+
+      <!-- サブビュー1: 誰が・何月に・何を予約したか（BC別×12月・1月・2月内訳） -->
+      <div id="subViewMatrix">
+        <p style="font-size:12.5px;color:var(--mute);margin:0 0 8px;">
+          ※BC名をクリックすると注文内容の修正ができます。各月の枠に「何を何個予約しているか（＋添付品数）」が表示されます。
+        </p>
+        <div class="table-wrap">
+          <table class="agg-table">
+            <thead>
+              <tr>
+                <th style="width:130px;">BC名</th>
+                <th style="width:27%;">12月の予約内容</th>
+                <th style="width:27%;">1月の予約内容</th>
+                <th style="width:27%;">2月の予約内容</th>
+                <th style="width:100px;">3ヶ月合計</th>
+                <th style="width:60px;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="bcMatrixBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- サブビュー2〜4: 月別（12月 / 1月 / 2月）納品・手配リスト -->
+      <div id="subViewMonth" hidden>
+        <h3 id="monthViewTitle" style="font-size:15px;margin:6px 0 10px;color:var(--brand);"></h3>
+        <div class="table-wrap">
+          <table class="agg-table">
+            <thead>
+              <tr>
+                <th style="width:150px;">BC名</th>
+                <th>その月の予約商品・個数</th>
+                <th style="width:180px;">その月の添付プレゼント</th>
+                <th style="width:120px;">その月の金額（上代）</th>
+              </tr>
+            </thead>
+            <tbody id="monthTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- サブビュー5: 品目別・月別 発注合計一覧 -->
+      <div id="subViewProd" hidden>
+        <h3 style="font-size:15px;margin:6px 0 10px;color:var(--brand);">品目別・月別 発注合計一覧（メーカー発注・在庫確認用）</h3>
+        <div class="table-wrap">
+          <table class="agg-table" id="prodTable">
+            <thead>
+              <tr>
+                <th>品名</th>
+                <th>添付条件</th>
+                <th>上代</th>
+                <th>12月数</th>
+                <th>1月数</th>
+                <th>2月数</th>
+                <th>合計数</th>
+                <th>合計金額</th>
+                <th>添付品合計</th>
+              </tr>
+            </thead>
+            <tbody id="prodTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 紙の注文書 代理入力画面 ==================== -->
+  <section id="viewOrder" hidden>
+    <div class="card">
+      <div class="card-title">
+        <span>紙で提出された注文書の入力</span>
+        <button type="button" class="btn-danger" id="btnClearForm">クリア</button>
+      </div>
+      <div>
+        <label class="field-label" for="inpName">BC名 <span style="color:var(--danger)">*必須</span></label>
+        <input type="text" id="inpName" placeholder="BC名を入力してください">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>商品・月別の数量</span>
+      </div>
+
+      <div class="filter-bar" id="filterBar">
+        <button type="button" class="filter-chip active" data-filter="all">すべて (22品目)</button>
+        <button type="button" class="filter-chip" data-filter="gift">プレゼント添付あり (12)</button>
+        <button type="button" class="filter-chip" data-filter="regular">通常・レギュラー品 (10)</button>
+        <button type="button" class="filter-chip" data-filter="selected">入力中の商品のみ</button>
+      </div>
+
+      <div class="item-list" id="itemList"></div>
+    </div>
+  </section>
+</main>
+
+<!-- 紙入力タブ時のみ表示される下部登録バー -->
+<div class="bottom-bar" id="bottomBar" hidden>
+  <div class="bottom-inner">
+    <div class="summary-months">
+      <div class="sum-cell">
+        <span class="lbl">12月</span>
+        <span class="val" id="sumM12">¥0</span>
+      </div>
+      <div class="sum-cell">
+        <span class="lbl">1月</span>
+        <span class="val" id="sumM1">¥0</span>
+      </div>
+      <div class="sum-cell">
+        <span class="lbl">2月</span>
+        <span class="val" id="sumM2">¥0</span>
+      </div>
+      <div class="sum-cell total-cell">
+        <span class="lbl">合計（上代）</span>
+        <span class="val" id="sumTotal">¥0</span>
+      </div>
+    </div>
+    <div class="action-btns">
+      <button type="button" class="btn-primary" id="btnSaveAdminQuick">この内容を集計表に登録する（続けて次の方を入力）</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CLOUD_API_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a1ae788da6485c';
+
+const PRODUCTS = [
+  { id: 1,  name: 'アルソア酵素',               short: '酵素',             gift: '2包添付（12〜2月）',    giftUnit: '包', giftPer: 2,  giftM12: true,  price: 10000, note: '12月も添付あり', cat: 'gift' },
+  { id: 2,  name: 'アルソア白鶴霊芝エクストラ30', short: '白鶴霊芝EX30',     gift: '3本添付（12〜2月）',    giftUnit: '本', giftPer: 3,  giftM12: true,  price: 32000, note: '12月も添付あり', cat: 'gift' },
+  { id: 3,  name: 'アルソア酵素プラスラージ',     short: '酵素プラスL',       gift: '10袋添付（1・2月）',   giftUnit: '袋', giftPer: 10, giftM12: false, price: 15000, note: '', cat: 'gift' },
+  { id: 4,  name: 'アルソア酵素G',              short: '酵素G',            gift: '6袋添付（1・2月）',    giftUnit: '袋', giftPer: 6,  giftM12: false, price: 20000, note: '', cat: 'gift' },
+  { id: 5,  name: 'アルソア霊芝ラージ',          short: '霊芝L',            gift: '10袋添付（1・2月）',   giftUnit: '袋', giftPer: 10, giftM12: false, price: 30000, note: '', cat: 'gift' },
+  { id: 6,  name: 'アルソアビエッセS',          short: 'ビエッセS',         gift: '6袋添付（1・2月）',    giftUnit: '袋', giftPer: 6,  giftM12: false, price: 10000, note: '', cat: 'gift' },
+  { id: 7,  name: 'アルソアビエッセEX',         short: 'ビエッセEX',        gift: '1袋添付（1・2月）',    giftUnit: '袋', giftPer: 1,  giftM12: false, price: 20000, note: '', cat: 'gift' },
+  { id: 8,  name: 'アルソアセルエナジィV',       short: 'セルエナジィV',     gift: '3袋添付（1・2月）',    giftUnit: '袋', giftPer: 3,  giftM12: false, price: 10000, note: '', cat: 'gift' },
+  { id: 9,  name: 'アルソアシナヤカラージ',       short: 'シナヤカL',         gift: '9袋添付（1・2月）',    giftUnit: '袋', giftPer: 9,  giftM12: false, price: 24000, note: '', cat: 'gift' },
+  { id: 10, name: 'アルソアミネラルプラス',       short: 'ミネラルプラス',     gift: '3袋添付（1・2月）',    giftUnit: '袋', giftPer: 3,  giftM12: false, price: 5800,  note: '', cat: 'gift' },
+  { id: 11, name: 'アルソアオメガ3',            short: 'オメガ3',          gift: '10粒添付（1・2月）',   giftUnit: '粒', giftPer: 10, giftM12: false, price: 9000,  note: '新処方(本わさび抽出物配合)', cat: 'gift' },
+  { id: 12, name: 'アルソア白鶴霊芝AG',          short: '白鶴霊芝AG',        gift: '5包添付（1〜5月）',    giftUnit: '包', giftPer: 5,  giftM12: false, price: 12000, note: '', cat: 'gift' },
+  { id: 13, name: 'アルソア酵素 1week （4箱以上）', short: '酵素1week',        gift: '',                  giftUnit: '',   giftPer: 0,  giftM12: false, price: 3000,  note: '※4箱以上', cat: 'regular', minTotal: 4 },
+  { id: 14, name: 'アルソアピュアカルCa',        short: 'ピュアカルCa',      gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 6500,  note: '', cat: 'regular' },
+  { id: 15, name: 'アルソアリナカンC',          short: 'リナカンC',         gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 5000,  note: '', cat: 'regular' },
+  { id: 16, name: 'アルソアFe',                short: 'Fe',               gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 4000,  note: '', cat: 'regular' },
+  { id: 17, name: 'アルソアクリアー',            short: 'クリアー',          gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 3800,  note: '', cat: 'regular' },
+  { id: 18, name: 'アルソア白鶴霊芝ティー',       short: '白鶴霊芝ティー',     gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 3800,  note: '', cat: 'regular' },
+  { id: 19, name: 'アルソア酵素プラスレギュラー',  short: '酵素プラスR',       gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 5500,  note: '', cat: 'regular' },
+  { id: 20, name: 'アルソア白鶴霊芝エクストラ10',  short: '白鶴霊芝EX10',      gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 12000, note: '', cat: 'regular' },
+  { id: 21, name: 'アルソア霊芝レギュラー',       short: '霊芝R',            gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 12000, note: '', cat: 'regular' },
+  { id: 22, name: 'アルソアシナヤカレギュラー',    short: 'シナヤカR',         gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 9000,  note: '', cat: 'regular' }
+];
+
+// ある品目・ある月(mKey: 'm12'|'m1'|'m2')の数量に対する添付数を返す
+function calcMonthGift(p, mKey, qtyVal) {
+  if (!p.giftPer || !qtyVal) return 0;
+  if (mKey === 'm12' && !p.giftM12) return 0;
+  return p.giftPer * qtyVal;
+}
+
+function calcGiftCount(p, q) {
+  if (!p.giftPer || !q) return 0;
+  const eligibleQty = (p.giftM12 ? (q.m12 || 0) : 0) + (q.m1 || 0) + (q.m2 || 0);
+  return p.giftPer * eligibleQty;
+}
+
+const STORAGE_KEY_ORDERS = 'arsoa_winter_2026_orders_v1';
+let currentQty = {};
+let currentFilter = 'all';
+let currentSubTab = 'matrix';
+let orders = [];
+
+const $ = id => document.getElementById(id);
+const fmtYen = n => '¥' + Number(n || 0).toLocaleString('ja-JP');
+
+function initQty() {
+  PRODUCTS.forEach(p => {
+    currentQty[p.id] = { m12: 0, m1: 0, m2: 0 };
+  });
+}
+
+function loadLocalOrders() {
+  initQty();
+  try {
+    const savedOrders = localStorage.getItem(STORAGE_KEY_ORDERS);
+    if (savedOrders) orders = JSON.parse(savedOrders);
+  } catch (e) { orders = []; }
+}
+
+function saveLocalOrders() {
+  try {
+    localStorage.setItem(STORAGE_KEY_ORDERS, JSON.stringify(orders));
+  } catch (e) {}
+  $('orderCountBadge').textContent = orders.length;
+}
+
+async function fetchCloudOrders() {
+  try {
+    $('syncStatus').textContent = '🔄 同期中...';
+    const res = await fetch(CLOUD_API_URL, { cache: 'no-store' });
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.data && Array.isArray(json.data.orders)) {
+        orders = json.data.orders;
+        saveLocalOrders();
+        renderAdminTables();
+      }
+      const nowStr = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      $('syncStatus').textContent = `✅ 自動同期済 (${nowStr})`;
+    }
+  } catch (e) {
+    $('syncStatus').textContent = '⚠️ オフライン（PC内データを表示中）';
+  }
+}
+
+async function pushCloudOrders() {
+  saveLocalOrders();
+  renderAdminTables();
+  try {
+    $('syncStatus').textContent = '🔄 保存中...';
+    await fetch(CLOUD_API_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'arsoa_winter_2026',
+        data: { orders }
+      })
+    });
+    const nowStr = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    $('syncStatus').textContent = `✅ 自動同期済 (${nowStr})`;
+  } catch (e) {
+    $('syncStatus').textContent = '⚠️ クラウド保存失敗';
+  }
+}
+
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => { t.hidden = true; }, 2600);
+}
+
+function renderItems() {
+  const container = $('itemList');
+  container.innerHTML = '';
+
+  PRODUCTS.forEach(p => {
+    const q = currentQty[p.id] || { m12: 0, m1: 0, m2: 0 };
+    const sumQ = q.m12 + q.m1 + q.m2;
+
+    if (currentFilter === 'gift' && p.cat !== 'gift') return;
+    if (currentFilter === 'regular' && p.cat !== 'regular') return;
+    if (currentFilter === 'selected' && sumQ === 0) return;
+
+    const isWarn = p.minTotal && sumQ > 0 && sumQ < p.minTotal;
+    const card = document.createElement('div');
+    card.className = 'item-card' + (sumQ > 0 ? ' has-qty' : '') + (isWarn ? ' warn-qty' : '');
+    card.id = `item-card-${p.id}`;
+
+    let badgesHtml = '';
+    if (p.gift) badgesHtml += `<span class="badge-gift">🎁 ${p.gift}</span>`;
+    if (p.note) badgesHtml += `<span class="badge-note">${p.note}</span>`;
+
+    const totalGift = calcGiftCount(p, q);
+    const subTotalYen = p.price * sumQ;
+
+    card.innerHTML = `
+      <div class="item-top">
+        <div>
+          <div class="item-name">${p.name}</div>
+          ${badgesHtml ? `<div class="item-badges">${badgesHtml}</div>` : ''}
+        </div>
+        <div class="item-price">${fmtYen(p.price)}</div>
+      </div>
+      <div class="months-grid">
+        ${['m12', 'm1', 'm2'].map((mKey, idx) => {
+          const mLabel = idx === 0 ? '12月' : idx === 1 ? '1月' : '2月';
+          const val = q[mKey] || 0;
+          let mTag = '';
+          if (p.giftPer > 0) {
+            if (idx === 0) {
+              mTag = p.giftM12 ? '<span class="m-tag-gift">添付あり</span>' : '<span class="m-tag-nogift">添付なし</span>';
+            } else {
+              mTag = '<span class="m-tag-gift">添付あり</span>';
+            }
+          }
+          return `
+            <div class="month-box ${val > 0 ? 'active-m' : ''}" id="mbox-${p.id}-${mKey}">
+              <div class="month-label"><span>${mLabel}</span>${mTag}</div>
+              <div class="stepper">
+                <button type="button" class="step-btn" data-id="${p.id}" data-m="${mKey}" data-delta="-1">−</button>
+                <input type="number" min="0" max="999" class="qty-input" data-id="${p.id}" data-m="${mKey}" value="${val}">
+                <button type="button" class="step-btn" data-id="${p.id}" data-m="${mKey}" data-delta="1">＋</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+      <div class="item-foot" id="ifoot-${p.id}" ${sumQ === 0 ? 'hidden' : ''}>
+        <span>3ヶ月計：<strong>${sumQ}</strong> 個（${fmtYen(subTotalYen)}）</span>
+        <span>${p.giftPer > 0 ? (totalGift > 0 ? `🎁 添付品計：${totalGift}${p.giftUnit}` : '（12月分は添付対象外）') : ''}</span>
+      </div>
+      <div class="warn-msg" id="iwarn-${p.id}" ${isWarn ? '' : 'hidden'}>
+        ⚠️ アルソア酵素 1week は4箱以上からのご注文となります（現在 ${sumQ}箱）
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function updateSummary() {
+  let m12 = 0, m1 = 0, m2 = 0;
+  PRODUCTS.forEach(p => {
+    const q = currentQty[p.id];
+    m12 += p.price * (q.m12 || 0);
+    m1  += p.price * (q.m1  || 0);
+    m2  += p.price * (q.m2  || 0);
+  });
+  const total = m12 + m1 + m2;
+  $('sumM12').textContent = fmtYen(m12);
+  $('sumM1').textContent  = fmtYen(m1);
+  $('sumM2').textContent  = fmtYen(m2);
+  $('sumTotal').textContent = fmtYen(total);
+}
+
+function setQty(id, mKey, newVal) {
+  const v = Math.max(0, Math.min(999, parseInt(newVal, 10) || 0));
+  currentQty[id][mKey] = v;
+
+  const inp = document.querySelector(`input.qty-input[data-id="${id}"][data-m="${mKey}"]`);
+  if (inp) inp.value = v;
+  const mbox = $(`mbox-${id}-${mKey}`);
+  if (mbox) mbox.classList.toggle('active-m', v > 0);
+
+  const p = PRODUCTS.find(x => x.id === id);
+  const q = currentQty[id];
+  const sumQ = q.m12 + q.m1 + q.m2;
+  const isWarn = p.minTotal && sumQ > 0 && sumQ < p.minTotal;
+
+  const card = $(`item-card-${id}`);
+  if (card) {
+    card.classList.toggle('has-qty', sumQ > 0);
+    card.classList.toggle('warn-qty', Boolean(isWarn));
+  }
+  const foot = $(`ifoot-${id}`);
+  if (foot) {
+    foot.hidden = sumQ === 0;
+    const totalGift = calcGiftCount(p, q);
+    foot.innerHTML = `
+      <span>3ヶ月計：<strong>${sumQ}</strong> 個（${fmtYen(p.price * sumQ)}）</span>
+      <span>${p.giftPer > 0 ? (totalGift > 0 ? `🎁 添付品計：${totalGift}${p.giftUnit}` : '（12月分は添付対象外）') : ''}</span>
+    `;
+  }
+  const warn = $(`iwarn-${id}`);
+  if (warn) {
+    warn.hidden = !isWarn;
+    warn.textContent = `⚠️ アルソア酵素 1week は4箱以上からのご注文となります（現在 ${sumQ}箱）`;
+  }
+
+  updateSummary();
+}
+
+$('itemList').addEventListener('click', e => {
+  const btn = e.target.closest('button.step-btn');
+  if (!btn) return;
+  const id = Number(btn.dataset.id);
+  const mKey = btn.dataset.m;
+  const delta = Number(btn.dataset.delta);
+  const cur = currentQty[id][mKey] || 0;
+  setQty(id, mKey, cur + delta);
+});
+
+$('itemList').addEventListener('input', e => {
+  const inp = e.target.closest('input.qty-input');
+  if (!inp) return;
+  const id = Number(inp.dataset.id);
+  const mKey = inp.dataset.m;
+  setQty(id, mKey, inp.value);
+});
+
+$('filterBar').addEventListener('click', e => {
+  const chip = e.target.closest('button.filter-chip');
+  if (!chip) return;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  currentFilter = chip.dataset.filter;
+  renderItems();
+});
+
+$('btnClearForm').addEventListener('click', () => {
+  initQty();
+  $('inpName').value = '';
+  renderItems();
+  updateSummary();
+  showToast('入力をクリアしました');
+});
+
+function buildCurrentOrderObj() {
+  const name = ($('inpName').value || '').trim();
+  if (!name) {
+    alert('「BC名」を入力してください。');
+    $('inpName').focus();
+    return null;
+  }
+
+  let hasAny = false;
+  let m12 = 0, m1 = 0, m2 = 0;
+  for (const p of PRODUCTS) {
+    const q = currentQty[p.id];
+    const sumQ = (q.m12 || 0) + (q.m1 || 0) + (q.m2 || 0);
+    if (sumQ > 0) hasAny = true;
+    m12 += p.price * (q.m12 || 0);
+    m1  += p.price * (q.m1  || 0);
+    m2  += p.price * (q.m2  || 0);
+  }
+
+  if (!hasAny) {
+    alert('商品の数量を1つ以上入力してください。');
+    return null;
+  }
+
+  const qtyCopy = {};
+  PRODUCTS.forEach(p => {
+    const q = currentQty[p.id];
+    if ((q.m12 || 0) + (q.m1 || 0) + (q.m2 || 0) > 0) {
+      qtyCopy[p.id] = { m12: q.m12 || 0, m1: q.m1 || 0, m2: q.m2 || 0 };
+    }
+  });
+
+  return {
+    id: Date.now().toString(36),
+    updatedAt: new Date().toISOString(),
+    name,
+    qty: qtyCopy,
+    m12,
+    m1,
+    m2,
+    total: m12 + m1 + m2
+  };
+}
+
+async function upsertOrder(order) {
+  await fetchCloudOrders();
+  const norm = s => (s || '').replace(/[\s　]+/g, '');
+  const idx = orders.findIndex(o => norm(o.name) === norm(order.name));
+  if (idx >= 0) {
+    orders[idx] = order;
+  } else {
+    orders.push(order);
+  }
+  await pushCloudOrders();
+}
+
+$('btnSaveAdminQuick').addEventListener('click', async () => {
+  const order = buildCurrentOrderObj();
+  if (!order) return;
+  await upsertOrder(order);
+  initQty();
+  $('inpName').value = '';
+  renderItems();
+  updateSummary();
+  showToast(`「${order.name}」さんの注文を集計表に登録しました`);
+});
+
+$('btnRefreshCloud').addEventListener('click', () => {
+  fetchCloudOrders();
+  showToast('最新の注文データを読み込みました');
+});
+
+$('modeTabs').addEventListener('click', e => {
+  const btn = e.target.closest('button.mode-tab');
+  if (!btn) return;
+  document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const mode = btn.dataset.mode;
+  if (mode === 'order') {
+    $('viewOrder').hidden = false;
+    $('viewAdmin').hidden = true;
+    $('bottomBar').hidden = false;
+  } else {
+    $('viewOrder').hidden = true;
+    $('viewAdmin').hidden = false;
+    $('bottomBar').hidden = true;
+    fetchCloudOrders();
+  }
+});
+
+// サブタブ切替
+$('subTabs').addEventListener('click', e => {
+  const btn = e.target.closest('button.sub-tab');
+  if (!btn) return;
+  document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSubTab = btn.dataset.sub;
+  renderAdminTables();
+});
+
+// ある注文oの指定月(mKey)のHTMLセル内容を作る
+function buildMonthCellHtml(o, mKey) {
+  const items = [];
+  PRODUCTS.forEach(p => {
+    const q = o.qty && o.qty[p.id];
+    const v = q ? (q[mKey] || 0) : 0;
+    if (v > 0) {
+      const g = calcMonthGift(p, mKey, v);
+      const gHtml = g > 0 ? `<span class="gift-inline">(+${g}${p.giftUnit})</span>` : '';
+      items.push(`<li class="month-cell-item"><strong>${p.short}</strong> × <strong>${v}</strong>${gHtml}</li>`);
+    }
+  });
+  const yen = o[mKey] || 0;
+  if (items.length === 0) {
+    return `<span style="color:#aaa;font-size:12px;">ー</span>`;
+  }
+  return `
+    <ul class="month-cell-list">${items.join('')}</ul>
+    <div class="month-sub-yen">${fmtYen(yen)}</div>
+  `;
+}
+
+function renderAdminTables() {
+  $('orderCountBadge').textContent = orders.length;
+
+  let totalM12 = 0, totalM1 = 0, totalM2 = 0;
+  orders.forEach(o => {
+    totalM12 += o.m12 || 0;
+    totalM1  += o.m1  || 0;
+    totalM2  += o.m2  || 0;
+  });
+  const grandTotal = totalM12 + totalM1 + totalM2;
+
+  $('kpiCount').textContent = `${orders.length}名`;
+  $('kpiM12').textContent   = fmtYen(totalM12);
+  $('kpiM1').textContent    = fmtYen(totalM1);
+  $('kpiM2').textContent    = fmtYen(totalM2);
+  $('kpiTotal').textContent = fmtYen(grandTotal);
+
+  // 表示セクションの切り替え
+  $('subViewMatrix').hidden = currentSubTab !== 'matrix';
+  $('subViewMonth').hidden  = !(currentSubTab === 'm12' || currentSubTab === 'm1' || currentSubTab === 'm2');
+  $('subViewProd').hidden   = currentSubTab !== 'prod';
+
+  // ① 全体マトリクス（BC名 × 12月予約・1月予約・2月予約）
+  const bcMatrixBody = $('bcMatrixBody');
+  bcMatrixBody.innerHTML = '';
+  if (orders.length === 0) {
+    bcMatrixBody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--mute);padding:22px;">まだ予約データがありません。BCさんがスマホから注文を送るとここに自動で表示されます（紙の注文は右上の「＋ 紙の注文書を手入力」から追加できます）。</td></tr>`;
+  } else {
+    orders.forEach((o, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><a href="#" class="edit-bc-link" data-idx="${idx}" style="font-weight:bold;font-size:15px;color:var(--brand);">${o.name}</a></td>
+        <td>${buildMonthCellHtml(o, 'm12')}</td>
+        <td>${buildMonthCellHtml(o, 'm1')}</td>
+        <td>${buildMonthCellHtml(o, 'm2')}</td>
+        <td class="num" style="font-weight:bold;font-size:14.5px;vertical-align:middle;">${fmtYen(o.total)}</td>
+        <td style="vertical-align:middle;text-align:center;"><button type="button" class="btn-danger del-bc-btn" data-idx="${idx}">削除</button></td>
+      `;
+      bcMatrixBody.appendChild(tr);
+    });
+  }
+
+  // ②〜④ 月別（12月 / 1月 / 2月）納品・手配リスト
+  if (currentSubTab === 'm12' || currentSubTab === 'm1' || currentSubTab === 'm2') {
+    const mLabel = currentSubTab === 'm12' ? '12月' : currentSubTab === 'm1' ? '1月' : '2月';
+    $('monthViewTitle').textContent = `${mLabel}に予約があるBC一覧（納品・手配チェック用）`;
+    const mBody = $('monthTableBody');
+    mBody.innerHTML = '';
+
+    const activeOrders = orders.filter(o => (o[currentSubTab] || 0) > 0);
+    if (activeOrders.length === 0) {
+      mBody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--mute);padding:20px;">${mLabel}の予約はまだありません。</td></tr>`;
+    } else {
+      activeOrders.forEach(o => {
+        const prodList = [];
+        const giftList = [];
+        PRODUCTS.forEach(p => {
+          const q = o.qty && o.qty[p.id];
+          const v = q ? (q[currentSubTab] || 0) : 0;
+          if (v > 0) {
+            prodList.push(`${p.name.replace(/^アルソア/, '')} × <strong>${v}個</strong>`);
+            const g = calcMonthGift(p, currentSubTab, v);
+            if (g > 0) {
+              giftList.push(`${p.short}添付：<strong>${g}${p.giftUnit}</strong>`);
+            }
+          }
+        });
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight:bold;font-size:15px;">${o.name}</td>
+          <td style="line-height:1.6;">${prodList.join('<br>')}</td>
+          <td style="line-height:1.6;color:var(--accent);">${giftList.length ? giftList.join('<br>') : '<span style="color:#999;">なし</span>'}</td>
+          <td class="num" style="font-weight:bold;font-size:14.5px;">${fmtYen(o[currentSubTab])}</td>
+        `;
+        mBody.appendChild(tr);
+      });
+    }
+  }
+
+  // ⑤ 品目別一覧
+  const prodTbody = $('prodTableBody');
+  prodTbody.innerHTML = '';
+  PRODUCTS.forEach(p => {
+    let q12 = 0, q1 = 0, q2 = 0;
+    orders.forEach(o => {
+      const q = o.qty && o.qty[p.id];
+      if (q) {
+        q12 += q.m12 || 0;
+        q1  += q.m1  || 0;
+        q2  += q.m2  || 0;
+      }
+    });
+    const qSum = q12 + q1 + q2;
+    const amt = p.price * qSum;
+    const giftCountTotal = calcGiftCount(p, { m12: q12, m1: q1, m2: q2 });
+    const giftSum = giftCountTotal > 0 ? `${giftCountTotal}${p.giftUnit}` : '-';
+    const tr = document.createElement('tr');
+    if (qSum > 0) tr.style.background = '#fbfefb';
+    tr.innerHTML = `
+      <td style="font-weight:${qSum > 0 ? 'bold' : 'normal'};">${p.name}</td>
+      <td style="font-size:12px;">${p.gift || '-'}</td>
+      <td class="num">${fmtYen(p.price)}</td>
+      <td class="num">${q12 || '-'}</td>
+      <td class="num">${q1  || '-'}</td>
+      <td class="num">${q2  || '-'}</td>
+      <td class="num" style="font-weight:bold;">${qSum || '-'}</td>
+      <td class="num" style="font-weight:bold;">${qSum > 0 ? fmtYen(amt) : '-'}</td>
+      <td class="num">${giftSum}</td>
+    `;
+    prodTbody.appendChild(tr);
+  });
+}
+
+$('bcMatrixBody').addEventListener('click', async e => {
+  const editLink = e.target.closest('a.edit-bc-link');
+  if (editLink) {
+    e.preventDefault();
+    const idx = Number(editLink.dataset.idx);
+    const o = orders[idx];
+    if (!o) return;
+    $('inpName').value = o.name;
+    initQty();
+    Object.entries(o.qty).forEach(([pid, q]) => {
+      currentQty[Number(pid)] = { m12: q.m12 || 0, m1: q.m1 || 0, m2: q.m2 || 0 };
+    });
+    renderItems();
+    updateSummary();
+    document.querySelector('.mode-tab[data-mode="order"]').click();
+    showToast(`「${o.name}」さんの注文データを読み込みました`);
+    return;
+  }
+  const delBtn = e.target.closest('button.del-bc-btn');
+  if (delBtn) {
+    const idx = Number(delBtn.dataset.idx);
+    const o = orders[idx];
+    if (!o) return;
+    if (confirm(`「${o.name}」さんの注文データを削除しますか？`)) {
+      orders.splice(idx, 1);
+      await pushCloudOrders();
+    }
+  }
+});
+
+// Excel集計表出力（①誰が・何月に・何を予約したか一覧、②12月・1月・2月別の手配リスト、③品目別集計表 の3シート構成）
+$('btnExportExcel').addEventListener('click', async () => {
+  if (typeof ExcelJS === 'undefined') {
+    alert('Excel出力ライブラリの読み込み中です。少し待ってから再度お試しください。');
+    return;
+  }
+  const wb = new ExcelJS.Workbook();
+  const F  = { name: '游ゴシック', size: 10 };
+  const FB = { name: '游ゴシック', size: 10, bold: true };
+  const FT = { name: '游ゴシック', size: 14, bold: true };
+  const th = { style: 'thin', color: { argb: 'FF000000' } };
+  const B  = { top: th, left: th, bottom: th, right: th };
+
+  // Helper: 指定月の予約テキストを作る
+  const buildMonthTextForExcel = (o, mKey) => {
+    const lines = [];
+    PRODUCTS.forEach(p => {
+      const q = o.qty && o.qty[p.id];
+      const v = q ? (q[mKey] || 0) : 0;
+      if (v > 0) {
+        const g = calcMonthGift(p, mKey, v);
+        const gStr = g > 0 ? `(+添付${g}${p.giftUnit})` : '';
+        lines.push(`${p.short}×${v}${gStr}`);
+      }
+    });
+    return lines.join('\n');
+  };
+
+  // ==================== シート1: 誰が・何月に・何を予約したか一覧（BC別×月別） ====================
+  const ws1 = wb.addWorksheet('BC別・月別予約一覧', {
+    pageSetup: { paperSize: 9, orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 }
+  });
+  ws1.addRow(['冬の健食キャンペーン2026 誰が・何月に・何を予約したか一覧']).getCell(1).font = FT;
+  ws1.addRow([`出力日：${new Date().toLocaleDateString('ja-JP')}　予約人数：${orders.length}名`]).getCell(1).font = F;
+  ws1.addRow([]);
+
+  const h1 = ['BC名', '12月 予約品目・個数', '12月金額', '1月 予約品目・個数', '1月金額', '2月 予約品目・個数', '2月金額', '3ヶ月合計'];
+  const rH1 = ws1.addRow(h1);
+  h1.forEach((_, i) => {
+    const c = rH1.getCell(i + 1);
+    c.font = FB;
+    c.border = B;
+    c.alignment = { horizontal: 'center', vertical: 'middle' };
+  });
+
+  orders.forEach(o => {
+    const vals = [
+      o.name,
+      buildMonthTextForExcel(o, 'm12'),
+      o.m12 || 0,
+      buildMonthTextForExcel(o, 'm1'),
+      o.m1 || 0,
+      buildMonthTextForExcel(o, 'm2'),
+      o.m2 || 0,
+      o.total || 0
+    ];
+    const r = ws1.addRow(vals);
+    vals.forEach((_, i) => {
+      const c = r.getCell(i + 1);
+      c.font = (i === 0 || i === 7) ? FB : F;
+      c.border = B;
+      c.alignment = { vertical: 'top', wrapText: true };
+      if (i === 2 || i === 4 || i === 6 || i === 7) {
+        c.numFmt = '#,##0';
+        c.alignment = { horizontal: 'right', vertical: 'top' };
+      }
+    });
+  });
+  [18, 28, 12, 28, 12, 28, 12, 14].forEach((w, i) => ws1.getColumn(i + 1).width = w);
+
+  // ==================== シート2: 月別・個人別 明細リスト（1行＝1予約アイテム、フィルタ・並べ替え自在） ====================
+  const ws2 = wb.addWorksheet('月別手配リスト', {
+    pageSetup: { paperSize: 9, orientation: 'portrait', fitToPage: true, fitToWidth: 1, fitToHeight: 0 }
+  });
+  ws2.addRow(['冬の健食キャンペーン2026 月別・個人別 手配リスト']).getCell(1).font = FT;
+  ws2.addRow([]);
+  const h2 = ['納品月', 'BC名', '品名', '個数', '上代単価', '金額（上代）', '添付品数'];
+  const rH2 = ws2.addRow(h2);
+  h2.forEach((_, i) => {
+    const c = rH2.getCell(i + 1);
+    c.font = FB;
+    c.border = B;
+    c.alignment = { horizontal: 'center' };
+  });
+
+  [['m12', '12月'], ['m1', '1月'], ['m2', '2月']].forEach(([mKey, mLabel]) => {
+    orders.forEach(o => {
+      PRODUCTS.forEach(p => {
+        const q = o.qty && o.qty[p.id];
+        const v = q ? (q[mKey] || 0) : 0;
+        if (v > 0) {
+          const g = calcMonthGift(p, mKey, v);
+          const vals = [mLabel, o.name, p.name, v, p.price, p.price * v, g > 0 ? `${g}${p.giftUnit}` : ''];
+          const r = ws2.addRow(vals);
+          vals.forEach((_, i) => {
+            const c = r.getCell(i + 1);
+            c.font = F;
+            c.border = B;
+            if (i >= 3 && i <= 5) c.numFmt = '#,##0';
+          });
+        }
+      });
+    });
+  });
+  [10, 18, 28, 8, 11, 13, 12].forEach((w, i) => ws2.getColumn(i + 1).width = w);
+
+  // ==================== シート3: 品目別・月別集計表（A4縦1枚収め） ====================
+  const ws3 = wb.addWorksheet('品目別集計表', {
+    pageSetup: { paperSize: 9, orientation: 'portrait', fitToPage: true, fitToWidth: 1, fitToHeight: 1 }
+  });
+  ws3.addRow(['冬の健食キャンペーン2026 品目別・月別集計表']).getCell(1).font = FT;
+  ws3.addRow([`出力日：${new Date().toLocaleDateString('ja-JP')}　注文人数：${orders.length}名　（※添付品合計は12月対象外の品目を除いて自動計算）`]).getCell(1).font = F;
+  ws3.addRow([]);
+
+  const h3 = ['品名', '添付条件', '上代', '12月数', '1月数', '2月数', '合計数', '12月金額', '1月金額', '2月金額', '合計金額', '添付品合計'];
+  const rH3 = ws3.addRow(h3);
+  h3.forEach((_, i) => {
+    const c = rH3.getCell(i + 1);
+    c.font = FB;
+    c.border = B;
+    c.alignment = { horizontal: 'center' };
+  });
+
+  let sum12Yen = 0, sum1Yen = 0, sum2Yen = 0, sumAllYen = 0;
+  PRODUCTS.forEach(p => {
+    let q12 = 0, q1 = 0, q2 = 0;
+    orders.forEach(o => {
+      const q = o.qty && o.qty[p.id];
+      if (q) { q12 += q.m12 || 0; q1 += q.m1 || 0; q2 += q.m2 || 0; }
+    });
+    const qAll = q12 + q1 + q2;
+    const y12 = p.price * q12, y1 = p.price * q1, y2 = p.price * q2, yAll = p.price * qAll;
+    sum12Yen += y12; sum1Yen += y1; sum2Yen += y2; sumAllYen += yAll;
+    const gCnt = calcGiftCount(p, { m12: q12, m1: q1, m2: q2 });
+    const giftTxt = gCnt > 0 ? `${gCnt}${p.giftUnit}` : '';
+
+    const vals = [p.name, p.gift, p.price, q12 || '', q1 || '', q2 || '', qAll || '', y12 || '', y1 || '', y2 || '', yAll || '', giftTxt];
+    const row = ws3.addRow(vals);
+    vals.forEach((_, i) => {
+      const c = row.getCell(i + 1);
+      c.font = qAll > 0 ? FB : F;
+      c.border = B;
+      if (i >= 2 && i <= 10) c.numFmt = '#,##0';
+    });
+  });
+
+  const totVals = ['合計', '', '', '', '', '', '', sum12Yen, sum1Yen, sum2Yen, sumAllYen, ''];
+  const rTot = ws3.addRow(totVals);
+  totVals.forEach((_, i) => {
+    const c = rTot.getCell(i + 1);
+    c.font = FB;
+    c.border = B;
+    if (i >= 7 && i <= 10) c.numFmt = '#,##0';
+  });
+
+  [28, 20, 9, 8, 8, 8, 8, 12, 12, 12, 13, 12].forEach((w, i) => ws3.getColumn(i + 1).width = w);
+
+  const buf = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const dStr = new Date().toISOString().slice(0, 10);
+  a.download = `冬の健食キャンペーン2026_予約集計表_${dStr}.xlsx`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Excel集計表をダウンロードしました');
+});
+
+loadLocalOrders();
+renderItems();
+updateSummary();
+renderAdminTables();
+fetchCloudOrders();
+setInterval(fetchCloudOrders, 10000);
+</script>
+</body>
+</html>
