@@ -349,6 +349,7 @@ input:focus {
   justify-content: center;
   gap: 6px;
 }
+.btn-primary:disabled { opacity: 0.5; cursor: default; }
 .btn-primary:active { opacity: 0.85; }
 .btn-secondary {
   background: #fff;
@@ -490,29 +491,41 @@ input:focus {
       </div>
     </div>
     <div class="action-btns">
-      <button type="button" class="btn-primary" id="btnOpenConfirm">注文内容を確認して送る →</button>
+      <button type="button" class="btn-primary" id="btnOpenConfirm">注文内容を確認する →</button>
     </div>
   </div>
 </div>
 
 <!-- 注文確認モーダル -->
 <div class="modal-backdrop" id="confirmModal" hidden>
-  <div class="modal">
+  <div class="modal" id="confirmModalContent">
     <h2>ご注文内容の確認</h2>
     <p style="font-size:13px;color:var(--mute);margin:0 0 10px;">
-      以下の内容でよろしければ「LINEで注文を送る」を押してください。
+      以下の内容でよろしければ「注文を確定して送信する」を押してください（自動で集計されます）。
     </p>
     <div class="order-preview" id="orderPreviewText"></div>
     <div style="display:flex;flex-direction:column;gap:8px;">
-      <button type="button" class="btn-primary" id="btnSendLine" style="background:#06C755;">LINEで注文を送る</button>
-      <button type="button" class="btn-primary" id="btnCopyText">注文文をコピーする（LINE等に貼り付け用）</button>
+      <button type="button" class="btn-primary" id="btnSubmitCloud">注文を確定して送信する</button>
       <button type="button" class="btn-secondary" id="btnCloseModal">戻って修正する</button>
     </div>
   </div>
 </div>
 
+<!-- 送信完了モーダル -->
+<div class="modal-backdrop" id="doneModal" hidden>
+  <div class="modal" style="text-align:center;padding:28px 20px;">
+    <div style="font-size:46px;margin-bottom:8px;">✅</div>
+    <h2 style="font-size:20px;margin-bottom:8px;">ご注文を受け付けました！</h2>
+    <p style="font-size:14px;color:var(--mute);line-height:1.6;margin:0 0 18px;">
+      アルソア長路の集計システムへ自動で登録されました。<br>（LINEでの送信は不要です）
+    </p>
+    <button type="button" class="btn-primary" id="btnCloseDone" style="width:100%;">閉じる</button>
+  </div>
+</div>
+
 <script>
-// giftM12: true の品目（アルソア酵素、白鶴霊芝エクストラ30）のみ12月注文分にも添付がつく。他は1月・2月のみ添付。
+const CLOUD_API_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a1ae788da6485c';
+
 const PRODUCTS = [
   { id: 1,  name: 'アルソア酵素',               gift: '2包添付（12〜2月）',    giftUnit: '包', giftPer: 2,  giftM12: true,  price: 10000, note: '12月も添付あり', cat: 'gift' },
   { id: 2,  name: 'アルソア白鶴霊芝エクストラ30', gift: '3本添付（12〜2月）',    giftUnit: '本', giftPer: 3,  giftM12: true,  price: 32000, note: '12月も添付あり', cat: 'gift' },
@@ -538,7 +551,6 @@ const PRODUCTS = [
   { id: 22, name: 'アルソアシナヤカレギュラー',    gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 9000,  note: '', cat: 'regular' }
 ];
 
-// 添付品の個数計算（12月は giftM12 が true の品目のみ対象、1月・2月は全添付対象品目）
 function calcGiftCount(p, q) {
   if (!p.giftPer || !q) return 0;
   const eligibleQty = (p.giftM12 ? (q.m12 || 0) : 0) + (q.m1 || 0) + (q.m2 || 0);
@@ -791,12 +803,20 @@ function buildCurrentOrderObj() {
     }
   });
 
-  return { name, qty: qtyCopy, m12, m1, m2, total: m12 + m1 + m2 };
+  return {
+    id: Date.now().toString(36),
+    updatedAt: new Date().toISOString(),
+    name,
+    qty: qtyCopy,
+    m12,
+    m1,
+    m2,
+    total: m12 + m1 + m2
+  };
 }
 
-function formatOrderText(order) {
+function formatPreviewText(order) {
   const lines = [];
-  lines.push('【冬の健食キャンペーン2026 注文】');
   lines.push(`BC名：${order.name}`);
   lines.push('----------------');
 
@@ -820,10 +840,6 @@ function formatOrderText(order) {
   lines.push(`1月計 ：${fmtYen(order.m1)}`);
   lines.push(`2月計 ：${fmtYen(order.m2)}`);
   lines.push(`合計額：${fmtYen(order.total)}`);
-
-  const compactItems = Object.entries(order.qty).map(([pid, q]) => `${pid}:${q.m12||0}.${q.m1||0}.${q.m2||0}`).join(',');
-  lines.push(`---集計コード---`);
-  lines.push(`ARSOA26W|${order.name}|${compactItems}`);
   return lines.join('\n');
 }
 
@@ -832,7 +848,7 @@ $('btnOpenConfirm').addEventListener('click', () => {
   const order = buildCurrentOrderObj();
   if (!order) return;
   pendingOrder = order;
-  $('orderPreviewText').textContent = formatOrderText(order);
+  $('orderPreviewText').textContent = formatPreviewText(order);
   $('confirmModal').hidden = false;
 });
 
@@ -840,22 +856,57 @@ $('btnCloseModal').addEventListener('click', () => {
   $('confirmModal').hidden = true;
 });
 
-$('btnSendLine').addEventListener('click', () => {
-  if (!pendingOrder) return;
-  const text = formatOrderText(pendingOrder);
-  $('confirmModal').hidden = true;
-  const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
-  window.open(lineUrl, '_blank');
+$('btnCloseDone').addEventListener('click', () => {
+  $('doneModal').hidden = true;
 });
 
-$('btnCopyText').addEventListener('click', async () => {
+// クラウドへ直接送信して自動集計に登録
+$('btnSubmitCloud').addEventListener('click', async () => {
   if (!pendingOrder) return;
-  const text = formatOrderText(pendingOrder);
+  const btn = $('btnSubmitCloud');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+
   try {
-    await navigator.clipboard.writeText(text);
-    showToast('注文文をコピーしました！LINEに貼り付けて送ってください');
-  } catch (e) {}
-  $('confirmModal').hidden = true;
+    // 1. 現在のクラウド上の注文リストを取得
+    const resGet = await fetch(CLOUD_API_URL, { cache: 'no-store' });
+    let currentOrders = [];
+    if (resGet.ok) {
+      const json = await resGet.json();
+      if (json && json.data && Array.isArray(json.data.orders)) {
+        currentOrders = json.data.orders;
+      }
+    }
+
+    // 2. 同名BCがいれば上書き、いなければ追加
+    const norm = s => (s || '').replace(/[\s　]+/g, '');
+    const idx = currentOrders.findIndex(o => norm(o.name) === norm(pendingOrder.name));
+    if (idx >= 0) {
+      currentOrders[idx] = pendingOrder;
+    } else {
+      currentOrders.push(pendingOrder);
+    }
+
+    // 3. クラウドを更新
+    const resPut = await fetch(CLOUD_API_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'arsoa_winter_2026',
+        data: { orders: currentOrders }
+      })
+    });
+
+    if (!resPut.ok) throw new Error('送信エラー');
+
+    $('confirmModal').hidden = true;
+    $('doneModal').hidden = false;
+  } catch (e) {
+    alert('通信エラーが発生しました。電波の良い場所でもう一度「注文を確定して送信する」を押してください。');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '注文を確定して送信する';
+  }
 });
 
 loadState();
