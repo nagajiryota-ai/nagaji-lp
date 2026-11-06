@@ -32,47 +32,49 @@ body {
 header {
   background: linear-gradient(135deg, #1a2744 0%, #2a4a2a 100%);
   color: #fff;
-  padding: 18px 16px 14px;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  padding: 10px 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 .header-inner {
   max-width: 1080px;
   margin: 0 auto;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
 }
 header h1 {
-  font-size: 18px;
+  font-size: 15px;
   margin: 0;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 header .sub {
-  font-size: 12px;
-  opacity: 0.9;
-  margin-top: 3px;
+  display: none;
 }
 .mode-tabs {
   display: flex;
   background: rgba(255,255,255,0.18);
-  border-radius: 8px;
-  padding: 3px;
+  border-radius: 7px;
+  padding: 2px;
   gap: 2px;
-  flex-shrink: 0;
+  width: 100%;
+}
+@media (min-width: 640px) {
+  header h1 { font-size: 17px; }
+  .mode-tabs { width: auto; }
 }
 .mode-tab {
+  flex: 1;
   border: none;
   background: transparent;
   color: #fff;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: bold;
-  padding: 7px 12px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 5px;
   cursor: pointer;
+  white-space: nowrap;
 }
 .mode-tab.active {
   background: #fff;
@@ -662,13 +664,6 @@ table.agg-table td.num {
         <span>商品・月別の数量</span>
       </div>
 
-      <div class="filter-bar" id="filterBar">
-        <button type="button" class="filter-chip active" data-filter="all">すべて (22品目)</button>
-        <button type="button" class="filter-chip" data-filter="gift">プレゼント添付あり (12)</button>
-        <button type="button" class="filter-chip" data-filter="regular">通常・レギュラー品 (10)</button>
-        <button type="button" class="filter-chip" data-filter="selected">入力中の商品のみ</button>
-      </div>
-
       <div class="item-list" id="itemList"></div>
     </div>
   </section>
@@ -955,15 +950,6 @@ $('itemList').addEventListener('input', e => {
   const id = Number(inp.dataset.id);
   const mKey = inp.dataset.m;
   setQty(id, mKey, inp.value);
-});
-
-$('filterBar').addEventListener('click', e => {
-  const chip = e.target.closest('button.filter-chip');
-  if (!chip) return;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  chip.classList.add('active');
-  currentFilter = chip.dataset.filter;
-  renderItems();
 });
 
 $('btnClearForm').addEventListener('click', () => {
