@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>冬の健食キャンペーン2026 ご注文フォーム</title>
+<style>
+:root {
+  --bg: #f6f8f6;
+  --card: #ffffff;
+  --fg: #1a241a;
+  --mute: #5a6b5a;
+  --brand: #2a4a2a;
+  --brand-light: #e8f0e8;
+  --accent: #b85d19;
+  --accent-bg: #fff4eb;
+  --line: #d4ddd4;
+  --danger: #c62828;
+  --danger-bg: #ffebee;
+  --ok: #1b5e20;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  padding-bottom: 130px;
+}
+header {
+  background: linear-gradient(135deg, #2a4a2a 0%, #3d683d 100%);
+  color: #fff;
+  padding: 18px 16px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.header-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+header h1 {
+  font-size: 19px;
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+header .sub {
+  font-size: 12.5px;
+  opacity: 0.9;
+  margin-top: 3px;
+}
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 14px 12px;
+}
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.card-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--brand);
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--brand-light);
+  padding-bottom: 6px;
+}
+label.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: var(--fg);
+}
+input[type="text"] {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px 12px;
+  border: 1px solid #99a999;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--fg);
+  font-family: inherit;
+}
+input:focus {
+  outline: 2px solid var(--brand);
+  border-color: var(--brand);
+}
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.filter-chip {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--fg);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.filter-chip.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.item-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.item-card.has-qty {
+  border: 2px solid var(--brand);
+  background: #fbfdfb;
+}
+.item-card.warn-qty {
+  border: 2px solid var(--danger);
+  background: var(--danger-bg);
+}
+.item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.item-name {
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 1.35;
+}
+.item-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+.badge-gift {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: bold;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid #f0c9a6;
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+.badge-note {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: bold;
+  background: #eef2ff;
+  color: #314899;
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+.item-price {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.months-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.month-box {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 6px;
+  text-align: center;
+  border: 1px solid #e1e8e1;
+}
+.month-box.active-m {
+  background: var(--brand-light);
+  border-color: var(--brand);
+}
+.month-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--mute);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.month-box.active-m .month-label {
+  color: var(--brand);
+}
+.m-tag-gift {
+  font-size: 10px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid #f0c9a6;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.m-tag-nogift {
+  font-size: 10px;
+  background: #eee;
+  color: #666;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+}
+.step-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #b5c4b5;
+  background: #fff;
+  color: var(--fg);
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  user-select: none;
+}
+.step-btn:active {
+  background: var(--brand);
+  color: #fff;
+}
+.qty-input {
+  width: 38px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  padding: 2px 0;
+  -moz-appearance: textfield;
+}
+.qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.item-foot {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--ok);
+  font-weight: bold;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.warn-msg {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--danger);
+  font-weight: bold;
+}
+/* 下部固定バー */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 2px solid var(--brand);
+  box-shadow: 0 -3px 12px rgba(0,0,0,0.12);
+  padding: 10px 12px;
+  z-index: 60;
+}
+.bottom-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.summary-months {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  font-size: 12px;
+  text-align: center;
+}
+.sum-cell {
+  background: var(--bg);
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+.sum-cell.total-cell {
+  background: var(--brand-light);
+  color: var(--brand);
+  font-weight: bold;
+}
+.sum-cell .lbl {
+  display: block;
+  font-size: 10.5px;
+  color: var(--mute);
+}
+.sum-cell .val {
+  font-size: 13.5px;
+  font-weight: bold;
+}
+.action-btns {
+  display: flex;
+  gap: 8px;
+}
+.btn-primary {
+  flex: 1;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 14px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-primary:active { opacity: 0.85; }
+.btn-secondary {
+  background: #fff;
+  color: var(--brand);
+  border: 2px solid var(--brand);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn-danger {
+  background: #fff;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+/* モーダル */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-backdrop[hidden] { display: none; }
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 18px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+.modal h2 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  color: var(--brand);
+}
+.order-preview {
+  background: #f8f9f8;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13.5px;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+.toast {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a241a;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 200;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+.toast[hidden] { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>冬の健食キャンペーン2026 ご注文</h1>
+    <div class="sub">株式会社アルソア長路（12月・1月・2月分）</div>
+  </div>
+</header>
+
+<div id="toast" class="toast" hidden></div>
+
+<main>
+  <div class="card">
+    <div class="card-title">
+      <span>1. BC名を入力</span>
+      <button type="button" class="btn-danger" id="btnClearForm">入力をクリア</button>
+    </div>
+    <div>
+      <label class="field-label" for="inpName">BC名 <span style="color:var(--danger)">*必須</span></label>
+      <input type="text" id="inpName" placeholder="お名前を入力してください（例：長路 亮太）" autocomplete="name">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span>2. 商品・月別の数量を選ぶ</span>
+      <span style="font-size:12px;font-weight:normal;color:var(--mute);">上代（税抜）表示</span>
+    </div>
+    <p style="font-size:12px;color:var(--mute);margin:0 0 10px;line-height:1.5;">
+      ※12月からプレゼント添付がつくのは「アルソア酵素」「アルソア白鶴霊芝エクストラ30」の2品目のみです（他の添付つき品目は1月・2月分が添付対象となります）。
+    </p>
+
+    <div class="filter-bar" id="filterBar">
+      <button type="button" class="filter-chip active" data-filter="all">すべて (22品目)</button>
+      <button type="button" class="filter-chip" data-filter="gift">プレゼント添付あり (12)</button>
+      <button type="button" class="filter-chip" data-filter="regular">通常・レギュラー品 (10)</button>
+      <button type="button" class="filter-chip" data-filter="selected">選択中の商品のみ</button>
+    </div>
+
+    <div class="item-list" id="itemList"></div>
+  </div>
+</main>
+
+<!-- 下部固定サマリー＆送信バー -->
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <div class="summary-months">
+      <div class="sum-cell">
+        <span class="lbl">12月</span>
+        <span class="val" id="sumM12">¥0</span>
+      </div>
+      <div class="sum-cell">
+        <span class="lbl">1月</span>
+        <span class="val" id="sumM1">¥0</span>
+      </div>
+      <div class="sum-cell">
+        <span class="lbl">2月</span>
+        <span class="val" id="sumM2">¥0</span>
+      </div>
+      <div class="sum-cell total-cell">
+        <span class="lbl">合計（上代）</span>
+        <span class="val" id="sumTotal">¥0</span>
+      </div>
+    </div>
+    <div class="action-btns">
+      <button type="button" class="btn-primary" id="btnOpenConfirm">注文内容を確認して送る →</button>
+    </div>
+  </div>
+</div>
+
+<!-- 注文確認モーダル -->
+<div class="modal-backdrop" id="confirmModal" hidden>
+  <div class="modal">
+    <h2>ご注文内容の確認</h2>
+    <p style="font-size:13px;color:var(--mute);margin:0 0 10px;">
+      以下の内容でよろしければ「LINEで注文を送る」を押してください。
+    </p>
+    <div class="order-preview" id="orderPreviewText"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button type="button" class="btn-primary" id="btnSendLine" style="background:#06C755;">LINEで注文を送る</button>
+      <button type="button" class="btn-primary" id="btnCopyText">注文文をコピーする（LINE等に貼り付け用）</button>
+      <button type="button" class="btn-secondary" id="btnCloseModal">戻って修正する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// giftM12: true の品目（アルソア酵素、白鶴霊芝エクストラ30）のみ12月注文分にも添付がつく。他は1月・2月のみ添付。
+const PRODUCTS = [
+  { id: 1,  name: 'アルソア酵素',               gift: '2包添付（12〜2月）',    giftUnit: '包', giftPer: 2,  giftM12: true,  price: 10000, note: '12月も添付あり', cat: 'gift' },
+  { id: 2,  name: 'アルソア白鶴霊芝エクストラ30', gift: '3本添付（12〜2月）',    giftUnit: '本', giftPer: 3,  giftM12: true,  price: 32000, note: '12月も添付あり', cat: 'gift' },
+  { id: 3,  name: 'アルソア酵素プラスラージ',     gift: '10袋添付（1・2月）',   giftUnit: '袋', giftPer: 10, giftM12: false, price: 15000, note: '', cat: 'gift' },
+  { id: 4,  name: 'アルソア酵素G',              gift: '6袋添付（1・2月）',    giftUnit: '袋', giftPer: 6,  giftM12: false, price: 20000, note: '', cat: 'gift' },
+  { id: 5,  name: 'アルソア霊芝ラージ',          gift: '10袋添付（1・2月）',   giftUnit: '袋', giftPer: 10, giftM12: false, price: 30000, note: '', cat: 'gift' },
+  { id: 6,  name: 'アルソアビエッセS',          gift: '6袋添付（1・2月）',    giftUnit: '袋', giftPer: 6,  giftM12: false, price: 10000, note: '', cat: 'gift' },
+  { id: 7,  name: 'アルソアビエッセEX',         gift: '1袋添付（1・2月）',    giftUnit: '袋', giftPer: 1,  giftM12: false, price: 20000, note: '', cat: 'gift' },
+  { id: 8,  name: 'アルソアセルエナジィV',       gift: '3袋添付（1・2月）',    giftUnit: '袋', giftPer: 3,  giftM12: false, price: 10000, note: '', cat: 'gift' },
+  { id: 9,  name: 'アルソアシナヤカラージ',       gift: '9袋添付（1・2月）',    giftUnit: '袋', giftPer: 9,  giftM12: false, price: 24000, note: '', cat: 'gift' },
+  { id: 10, name: 'アルソアミネラルプラス',       gift: '3袋添付（1・2月）',    giftUnit: '袋', giftPer: 3,  giftM12: false, price: 5800,  note: '', cat: 'gift' },
+  { id: 11, name: 'アルソアオメガ3',            gift: '10粒添付（1・2月）',   giftUnit: '粒', giftPer: 10, giftM12: false, price: 9000,  note: '新処方(本わさび抽出物配合)', cat: 'gift' },
+  { id: 12, name: 'アルソア白鶴霊芝AG',          gift: '5包添付（1〜5月）',    giftUnit: '包', giftPer: 5,  giftM12: false, price: 12000, note: '', cat: 'gift' },
+  { id: 13, name: 'アルソア酵素 1week （4箱以上）', gift: '',                  giftUnit: '',   giftPer: 0,  giftM12: false, price: 3000,  note: '※4箱以上', cat: 'regular', minTotal: 4 },
+  { id: 14, name: 'アルソアピュアカルCa',        gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 6500,  note: '', cat: 'regular' },
+  { id: 15, name: 'アルソアリナカンC',          gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 5000,  note: '', cat: 'regular' },
+  { id: 16, name: 'アルソアFe',                gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 4000,  note: '', cat: 'regular' },
+  { id: 17, name: 'アルソアクリアー',            gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 3800,  note: '', cat: 'regular' },
+  { id: 18, name: 'アルソア白鶴霊芝ティー',       gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 3800,  note: '', cat: 'regular' },
+  { id: 19, name: 'アルソア酵素プラスレギュラー',  gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 5500,  note: '', cat: 'regular' },
+  { id: 20, name: 'アルソア白鶴霊芝エクストラ10',  gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 12000, note: '', cat: 'regular' },
+  { id: 21, name: 'アルソア霊芝レギュラー',       gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 12000, note: '', cat: 'regular' },
+  { id: 22, name: 'アルソアシナヤカレギュラー',    gift: '',                    giftUnit: '',   giftPer: 0,  giftM12: false, price: 9000,  note: '', cat: 'regular' }
+];
+
+// 添付品の個数計算（12月は giftM12 が true の品目のみ対象、1月・2月は全添付対象品目）
+function calcGiftCount(p, q) {
+  if (!p.giftPer || !q) return 0;
+  const eligibleQty = (p.giftM12 ? (q.m12 || 0) : 0) + (q.m1 || 0) + (q.m2 || 0);
+  return p.giftPer * eligibleQty;
+}
+
+const STORAGE_KEY_DRAFT = 'arsoa_winter_2026_bc_draft_v1';
+let currentQty = {};
+let currentFilter = 'all';
+
+const $ = id => document.getElementById(id);
+const fmtYen = n => '¥' + Number(n || 0).toLocaleString('ja-JP');
+
+function initQty() {
+  PRODUCTS.forEach(p => {
+    currentQty[p.id] = { m12: 0, m1: 0, m2: 0 };
+  });
+}
+
+function loadState() {
+  initQty();
+  try {
+    const savedDraft = localStorage.getItem(STORAGE_KEY_DRAFT);
+    if (savedDraft) {
+      const d = JSON.parse(savedDraft);
+      if (d.name) $('inpName').value = d.name;
+      if (d.qty) {
+        PRODUCTS.forEach(p => {
+          if (d.qty[p.id]) {
+            currentQty[p.id] = {
+              m12: Number(d.qty[p.id].m12 || 0),
+              m1:  Number(d.qty[p.id].m1  || 0),
+              m2:  Number(d.qty[p.id].m2  || 0)
+            };
+          }
+        });
+      }
+    }
+  } catch (e) {}
+}
+
+function saveDraft() {
+  try {
+    localStorage.setItem(STORAGE_KEY_DRAFT, JSON.stringify({
+      name: $('inpName').value,
+      qty: currentQty
+    }));
+  } catch (e) {}
+}
+
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => { t.hidden = true; }, 2600);
+}
+
+function renderItems() {
+  const container = $('itemList');
+  container.innerHTML = '';
+
+  PRODUCTS.forEach(p => {
+    const q = currentQty[p.id] || { m12: 0, m1: 0, m2: 0 };
+    const sumQ = q.m12 + q.m1 + q.m2;
+
+    if (currentFilter === 'gift' && p.cat !== 'gift') return;
+    if (currentFilter === 'regular' && p.cat !== 'regular') return;
+    if (currentFilter === 'selected' && sumQ === 0) return;
+
+    const isWarn = p.minTotal && sumQ > 0 && sumQ < p.minTotal;
+    const card = document.createElement('div');
+    card.className = 'item-card' + (sumQ > 0 ? ' has-qty' : '') + (isWarn ? ' warn-qty' : '');
+    card.id = `item-card-${p.id}`;
+
+    let badgesHtml = '';
+    if (p.gift) badgesHtml += `<span class="badge-gift">🎁 ${p.gift}</span>`;
+    if (p.note) badgesHtml += `<span class="badge-note">${p.note}</span>`;
+
+    const totalGift = calcGiftCount(p, q);
+    const subTotalYen = p.price * sumQ;
+
+    card.innerHTML = `
+      <div class="item-top">
+        <div>
+          <div class="item-name">${p.name}</div>
+          ${badgesHtml ? `<div class="item-badges">${badgesHtml}</div>` : ''}
+        </div>
+        <div class="item-price">${fmtYen(p.price)}</div>
+      </div>
+      <div class="months-grid">
+        ${['m12', 'm1', 'm2'].map((mKey, idx) => {
+          const mLabel = idx === 0 ? '12月' : idx === 1 ? '1月' : '2月';
+          const val = q[mKey] || 0;
+          let mTag = '';
+          if (p.giftPer > 0) {
+            if (idx === 0) {
+              mTag = p.giftM12 ? '<span class="m-tag-gift">添付あり</span>' : '<span class="m-tag-nogift">添付なし</span>';
+            } else {
+              mTag = '<span class="m-tag-gift">添付あり</span>';
+            }
+          }
+          return `
+            <div class="month-box ${val > 0 ? 'active-m' : ''}" id="mbox-${p.id}-${mKey}">
+              <div class="month-label"><span>${mLabel}</span>${mTag}</div>
+              <div class="stepper">
+                <button type="button" class="step-btn" data-id="${p.id}" data-m="${mKey}" data-delta="-1">−</button>
+                <input type="number" min="0" max="999" class="qty-input" data-id="${p.id}" data-m="${mKey}" value="${val}">
+                <button type="button" class="step-btn" data-id="${p.id}" data-m="${mKey}" data-delta="1">＋</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+      <div class="item-foot" id="ifoot-${p.id}" ${sumQ === 0 ? 'hidden' : ''}>
+        <span>3ヶ月計：<strong>${sumQ}</strong> 個（${fmtYen(subTotalYen)}）</span>
+        <span>${p.giftPer > 0 ? (totalGift > 0 ? `🎁 添付品計：${totalGift}${p.giftUnit}` : '（12月分は添付対象外）') : ''}</span>
+      </div>
+      <div class="warn-msg" id="iwarn-${p.id}" ${isWarn ? '' : 'hidden'}>
+        ⚠️ アルソア酵素 1week は4箱以上からのご注文となります（現在 ${sumQ}箱）
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function updateSummary() {
+  let m12 = 0, m1 = 0, m2 = 0;
+  PRODUCTS.forEach(p => {
+    const q = currentQty[p.id];
+    m12 += p.price * (q.m12 || 0);
+    m1  += p.price * (q.m1  || 0);
+    m2  += p.price * (q.m2  || 0);
+  });
+  const total = m12 + m1 + m2;
+  $('sumM12').textContent = fmtYen(m12);
+  $('sumM1').textContent  = fmtYen(m1);
+  $('sumM2').textContent  = fmtYen(m2);
+  $('sumTotal').textContent = fmtYen(total);
+  saveDraft();
+}
+
+function setQty(id, mKey, newVal) {
+  const v = Math.max(0, Math.min(999, parseInt(newVal, 10) || 0));
+  currentQty[id][mKey] = v;
+
+  const inp = document.querySelector(`input.qty-input[data-id="${id}"][data-m="${mKey}"]`);
+  if (inp) inp.value = v;
+  const mbox = $(`mbox-${id}-${mKey}`);
+  if (mbox) mbox.classList.toggle('active-m', v > 0);
+
+  const p = PRODUCTS.find(x => x.id === id);
+  const q = currentQty[id];
+  const sumQ = q.m12 + q.m1 + q.m2;
+  const isWarn = p.minTotal && sumQ > 0 && sumQ < p.minTotal;
+
+  const card = $(`item-card-${id}`);
+  if (card) {
+    card.classList.toggle('has-qty', sumQ > 0);
+    card.classList.toggle('warn-qty', Boolean(isWarn));
+  }
+  const foot = $(`ifoot-${id}`);
+  if (foot) {
+    foot.hidden = sumQ === 0;
+    const totalGift = calcGiftCount(p, q);
+    foot.innerHTML = `
+      <span>3ヶ月計：<strong>${sumQ}</strong> 個（${fmtYen(p.price * sumQ)}）</span>
+      <span>${p.giftPer > 0 ? (totalGift > 0 ? `🎁 添付品計：${totalGift}${p.giftUnit}` : '（12月分は添付対象外）') : ''}</span>
+    `;
+  }
+  const warn = $(`iwarn-${id}`);
+  if (warn) {
+    warn.hidden = !isWarn;
+    warn.textContent = `⚠️ アルソア酵素 1week は4箱以上からのご注文となります（現在 ${sumQ}箱）`;
+  }
+
+  updateSummary();
+}
+
+$('itemList').addEventListener('click', e => {
+  const btn = e.target.closest('button.step-btn');
+  if (!btn) return;
+  const id = Number(btn.dataset.id);
+  const mKey = btn.dataset.m;
+  const delta = Number(btn.dataset.delta);
+  const cur = currentQty[id][mKey] || 0;
+  setQty(id, mKey, cur + delta);
+});
+
+$('itemList').addEventListener('input', e => {
+  const inp = e.target.closest('input.qty-input');
+  if (!inp) return;
+  const id = Number(inp.dataset.id);
+  const mKey = inp.dataset.m;
+  setQty(id, mKey, inp.value);
+});
+
+$('inpName').addEventListener('input', saveDraft);
+
+$('filterBar').addEventListener('click', e => {
+  const chip = e.target.closest('button.filter-chip');
+  if (!chip) return;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  currentFilter = chip.dataset.filter;
+  renderItems();
+});
+
+$('btnClearForm').addEventListener('click', () => {
+  initQty();
+  $('inpName').value = '';
+  renderItems();
+  updateSummary();
+  showToast('入力をクリアしました');
+});
+
+function buildCurrentOrderObj() {
+  const name = ($('inpName').value || '').trim();
+  if (!name) {
+    alert('「BC名」を入力してください。');
+    $('inpName').focus();
+    return null;
+  }
+
+  let hasAny = false;
+  let m12 = 0, m1 = 0, m2 = 0;
+  for (const p of PRODUCTS) {
+    const q = currentQty[p.id];
+    const sumQ = (q.m12 || 0) + (q.m1 || 0) + (q.m2 || 0);
+    if (sumQ > 0) hasAny = true;
+    if (p.minTotal && sumQ > 0 && sumQ < p.minTotal) {
+      alert(`「${p.name}」は4箱以上でのご注文をお願いいたします（現在：${sumQ}箱）。`);
+      return null;
+    }
+    m12 += p.price * (q.m12 || 0);
+    m1  += p.price * (q.m1  || 0);
+    m2  += p.price * (q.m2  || 0);
+  }
+
+  if (!hasAny) {
+    alert('注文する商品の数量を1つ以上選んでください。');
+    return null;
+  }
+
+  const qtyCopy = {};
+  PRODUCTS.forEach(p => {
+    const q = currentQty[p.id];
+    if ((q.m12 || 0) + (q.m1 || 0) + (q.m2 || 0) > 0) {
+      qtyCopy[p.id] = { m12: q.m12 || 0, m1: q.m1 || 0, m2: q.m2 || 0 };
+    }
+  });
+
+  return { name, qty: qtyCopy, m12, m1, m2, total: m12 + m1 + m2 };
+}
+
+function formatOrderText(order) {
+  const lines = [];
+  lines.push('【冬の健食キャンペーン2026 注文】');
+  lines.push(`BC名：${order.name}`);
+  lines.push('----------------');
+
+  PRODUCTS.forEach(p => {
+    const q = order.qty[p.id];
+    if (!q) return;
+    const sumQ = (q.m12 || 0) + (q.m1 || 0) + (q.m2 || 0);
+    if (sumQ === 0) return;
+    const parts = [];
+    if (q.m12) parts.push(`12月:${q.m12}`);
+    if (q.m1)  parts.push(`1月:${q.m1}`);
+    if (q.m2)  parts.push(`2月:${q.m2}`);
+    const gCnt = calcGiftCount(p, q);
+    const giftStr = gCnt > 0 ? `（添付計:${gCnt}${p.giftUnit}）` : '';
+    lines.push(`■ ${p.name}`);
+    lines.push(`  ${parts.join(' / ')} [計${sumQ}個]${giftStr}`);
+  });
+
+  lines.push('----------------');
+  lines.push(`12月計：${fmtYen(order.m12)}`);
+  lines.push(`1月計 ：${fmtYen(order.m1)}`);
+  lines.push(`2月計 ：${fmtYen(order.m2)}`);
+  lines.push(`合計額：${fmtYen(order.total)}`);
+
+  const compactItems = Object.entries(order.qty).map(([pid, q]) => `${pid}:${q.m12||0}.${q.m1||0}.${q.m2||0}`).join(',');
+  lines.push(`---集計コード---`);
+  lines.push(`ARSOA26W|${order.name}|${compactItems}`);
+  return lines.join('\n');
+}
+
+let pendingOrder = null;
+$('btnOpenConfirm').addEventListener('click', () => {
+  const order = buildCurrentOrderObj();
+  if (!order) return;
+  pendingOrder = order;
+  $('orderPreviewText').textContent = formatOrderText(order);
+  $('confirmModal').hidden = false;
+});
+
+$('btnCloseModal').addEventListener('click', () => {
+  $('confirmModal').hidden = true;
+});
+
+$('btnSendLine').addEventListener('click', () => {
+  if (!pendingOrder) return;
+  const text = formatOrderText(pendingOrder);
+  $('confirmModal').hidden = true;
+  const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
+  window.open(lineUrl, '_blank');
+});
+
+$('btnCopyText').addEventListener('click', async () => {
+  if (!pendingOrder) return;
+  const text = formatOrderText(pendingOrder);
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('注文文をコピーしました！LINEに貼り付けて送ってください');
+  } catch (e) {}
+  $('confirmModal').hidden = true;
+});
+
+loadState();
+renderItems();
+updateSummary();
+</script>
+</body>
+</html>
