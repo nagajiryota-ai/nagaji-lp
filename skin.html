@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>オンライン肌カウンセリング ご予約｜アルソア長路</title>
+<meta name="description" content="サンプルをお試しいただいた方へ。Zoomで受けられる無料の肌カウンセリングのご予約ページです。">
+<style>
+  :root{
+    --navy:#1A2744; --gold:#B8973E; --red:#C0392B; --bg:#F8F6F3; --line:#06C755;
+    --text:#2b2b2b; --muted:#6b6b6b; --border:#ddd6cb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+       background:var(--bg);color:var(--text);line-height:1.8;font-size:16px;-webkit-text-size-adjust:100%}
+  .wrap{max-width:520px;margin:0 auto;padding:0 18px 40px}
+  .mincho{font-family:"Hiragino Mincho ProN","Noto Serif JP","Yu Mincho",serif}
+
+  /* ヘッダー */
+  header{background:var(--navy);color:#fff;text-align:center;padding:34px 18px 30px}
+  header .brand{font-size:12px;letter-spacing:.3em;color:var(--gold)}
+  header h1{font-size:25px;line-height:1.5;margin:10px 0 8px;font-weight:600}
+  header p{font-size:14px;opacity:.9}
+  .badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);
+         font-size:13px;padding:2px 14px;border-radius:20px;margin-top:12px}
+
+  section{margin-top:26px}
+  h2{font-size:19px;color:var(--navy);border-left:4px solid var(--gold);padding-left:10px;margin-bottom:12px}
+
+  .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px}
+  .thanks{text-align:center;font-size:15px}
+  .thanks strong{color:var(--navy)}
+
+  ul.points{list-style:none}
+  ul.points li{padding:8px 0 8px 28px;position:relative;border-bottom:1px dashed var(--border)}
+  ul.points li:last-child{border-bottom:none}
+  ul.points li::before{content:"✓";position:absolute;left:4px;color:var(--gold);font-weight:bold}
+
+  .flow{display:flex;gap:6px;text-align:center;font-size:13px}
+  .flow div{flex:1;background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 4px}
+  .flow b{display:block;color:var(--gold);font-size:12px}
+
+  /* フォーム */
+  label.q{display:block;font-weight:bold;color:var(--navy);margin:18px 0 6px;font-size:15px}
+  label.q:first-child{margin-top:0}
+  .req{background:var(--red);color:#fff;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:2px}
+  .opt{background:#999;color:#fff;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:2px}
+  input[type=text],select,textarea{width:100%;font-size:16px;padding:12px;border:1px solid #bbb;border-radius:8px;background:#fff;color:var(--text);font-family:inherit}
+  select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#888 50%),linear-gradient(135deg,#888 50%,transparent 50%);
+         background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px}
+  textarea{min-height:80px}
+  .row{display:flex;gap:8px}
+  .row > *{flex:1}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips label{display:inline-flex;align-items:center;gap:4px;border:1px solid #bbb;border-radius:20px;padding:6px 12px;font-size:14px;background:#fff;cursor:pointer}
+  .chips input{accent-color:var(--navy)}
+  .chips label.on{border-color:var(--navy);background:#eef0f6}
+  .hint{font-size:13px;color:var(--muted);margin-top:4px}
+  .err{color:var(--red);font-size:14px;margin-top:10px;display:none}
+
+  .btn-line{display:block;width:100%;border:none;border-radius:40px;background:var(--line);color:#fff;
+            font-size:18px;font-weight:bold;padding:16px;margin-top:22px;cursor:pointer;box-shadow:0 3px 0 #04a045}
+  .btn-line:active{transform:translateY(2px);box-shadow:0 1px 0 #04a045}
+  .sub-link{display:block;text-align:center;margin-top:14px;font-size:14px;color:var(--navy)}
+
+  .note{font-size:13px;color:var(--muted);margin-top:14px}
+  footer{text-align:center;font-size:12px;color:var(--muted);margin-top:34px;padding-top:16px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">ARSOA NAGAJI</div>
+  <h1 class="mincho">あなたの肌に合う<br>お手入れを、一緒に。</h1>
+  <p>オンライン肌カウンセリング（Zoom）</p>
+  <span class="badge">ご予約はLINEで かんたん1分</span>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <div class="card thanks">
+      このたびはサンプルを<br>お受け取りいただき<strong>ありがとうございます</strong>。<br>
+      使ってみた感想や、ふだんの肌の悩みを<br>おうちからZoomでお気軽にご相談ください。
+    </div>
+  </section>
+
+  <section>
+    <h2 class="mincho">こんな方におすすめ</h2>
+    <div class="card">
+      <ul class="points">
+        <li>乾燥・ベタつき・ゆらぎなど、季節で肌の調子が変わる</li>
+        <li>今のお手入れが自分の肌に合っているか知りたい</li>
+        <li>サンプルの正しい使い方を教えてほしい</li>
+        <li>店頭だとゆっくり相談しにくい</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="mincho">ご予約の流れ</h2>
+    <div class="flow">
+      <div><b>STEP1</b>下の欄に<br>ご希望を入力</div>
+      <div><b>STEP2</b>LINEで<br>そのまま送信</div>
+      <div><b>STEP3</b>日時確定と<br>Zoomのご案内</div>
+    </div>
+  </section>
+
+  <section id="form">
+    <h2 class="mincho">ご予約内容の入力</h2>
+    <div class="card">
+      <label class="q" for="name">お名前<span class="req">必須</span></label>
+      <input type="text" id="name" placeholder="例）金沢 花子" autocomplete="name">
+
+      <label class="q" for="age">年代<span class="opt">任意</span></label>
+      <select id="age">
+        <option value="">選択してください</option>
+        <option>10代</option><option>20代</option><option>30代</option><option>40代</option>
+        <option>50代</option><option>60代</option><option>70代以上</option>
+      </select>
+
+      <label class="q">気になること<span class="opt">任意・複数可</span></label>
+      <div class="chips" id="worries">
+        <label><input type="checkbox" value="乾燥">乾燥</label>
+        <label><input type="checkbox" value="ベタつき・テカリ">ベタつき・テカリ</label>
+        <label><input type="checkbox" value="毛穴">毛穴</label>
+        <label><input type="checkbox" value="くすみ">くすみ</label>
+        <label><input type="checkbox" value="ニキビ・吹き出物">ニキビ・吹き出物</label>
+        <label><input type="checkbox" value="ハリ・小じわ">ハリ・小じわ</label>
+        <label><input type="checkbox" value="シミ・ソバカス">シミ・ソバカス</label>
+        <label><input type="checkbox" value="敏感・ゆらぎ">敏感・ゆらぎ</label>
+        <label><input type="checkbox" value="メイクのこと">メイクのこと</label>
+      </div>
+
+      <label class="q">第1希望<span class="req">必須</span></label>
+      <div class="row">
+        <select id="d1"></select>
+        <select id="t1"></select>
+      </div>
+
+      <label class="q">第2希望<span class="req">必須</span></label>
+      <div class="row">
+        <select id="d2"></select>
+        <select id="t2"></select>
+      </div>
+      <p class="hint">受付時間：月〜土 9:00〜19:00（日曜・祝日はお休み）</p>
+
+      <label class="q" for="memo">ご質問・ご要望<span class="opt">任意</span></label>
+      <textarea id="memo" placeholder="例）サンプルを使ってみて、つっぱり感がなくて驚きました。冬の乾燥が心配です。"></textarea>
+
+      <p class="err" id="err"></p>
+
+      <button class="btn-line" id="send" type="button">LINEで予約を送る</button>
+      <a class="sub-link" id="addFriend" href="#" target="_blank" rel="noopener">先にLINEの友だち追加だけする方はこちら</a>
+
+      <p class="note">
+        ※ボタンを押すとLINEが開き、入力内容が自動で入ります。そのまま「送信」を押してください。<br>
+        ※日時を確定のうえ、LINEでZoomのURLをお送りします。<br>
+        ※カウンセリングは無料です。無理なおすすめはいたしません。
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    株式会社アルソア長路（石川県金沢市）<br>
+    ご入力いただいた内容は、カウンセリングのご連絡にのみ使用します。
+  </footer>
+</div>
+
+<script>
+// ===== 設定（ここだけ書きかえればOK）=====
+// LINE公式アカウントのID（@から始まるもの）
+const LINE_ID = "@wti9018u";
+// 予約を受け付ける期間（今日から何日先まで選べるか）
+const DAYS_AHEAD = 60;
+// 時間の選択肢（9:00〜18:30 開始、30分きざみ）
+const TIME_START = 9, TIME_END = 19, STEP_MIN = 30;
+// 祝日（日曜と同じくお休み）
+const HOLIDAYS = [
+  "2026-11-03","2026-11-23","2026-12-31",
+  "2027-01-01","2027-01-02","2027-01-03","2027-01-11","2027-02-11","2027-02-23","2027-03-21","2027-03-22",
+  "2027-04-29","2027-05-03","2027-05-04","2027-05-05","2027-07-19","2027-08-11",
+  "2027-09-20","2027-09-23","2027-10-11","2027-11-03","2027-11-23"
+];
+// ======================================
+
+const WEEK = ["日","月","火","水","木","金","土"];
+const pad = n => String(n).padStart(2,"0");
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+// 日付の選択肢（明日以降・日曜祝日を除く）
+function buildDates(sel){
+  sel.innerHTML = '<option value="">日にち</option>';
+  const d = new Date(); d.setHours(0,0,0,0);
+  for(let i=1;i<=DAYS_AHEAD;i++){
+    const x = new Date(d); x.setDate(d.getDate()+i);
+    if(x.getDay()===0 || HOLIDAYS.includes(ymd(x))) continue;
+    const o = document.createElement("option");
+    o.value = `${x.getMonth()+1}月${x.getDate()}日(${WEEK[x.getDay()]})`;
+    o.textContent = o.value;
+    sel.appendChild(o);
+  }
+}
+// 時間の選択肢
+function buildTimes(sel){
+  sel.innerHTML = '<option value="">時間</option>';
+  for(let m=TIME_START*60; m<TIME_END*60; m+=STEP_MIN){
+    const o = document.createElement("option");
+    o.value = `${Math.floor(m/60)}:${pad(m%60)}〜`;
+    o.textContent = o.value;
+    sel.appendChild(o);
+  }
+}
+["d1","d2"].forEach(id=>buildDates(document.getElementById(id)));
+["t1","t2"].forEach(id=>buildTimes(document.getElementById(id)));
+
+// チェックボックスの見た目
+document.querySelectorAll("#worries input").forEach(c=>{
+  c.addEventListener("change",()=>c.parentElement.classList.toggle("on",c.checked));
+});
+
+const lineId = LINE_ID.startsWith("@") ? LINE_ID : "@"+LINE_ID;
+document.getElementById("addFriend").href = "https://line.me/R/ti/p/" + encodeURIComponent(lineId);
+
+document.getElementById("send").addEventListener("click",()=>{
+  const v = id => document.getElementById(id).value.trim();
+  const err = document.getElementById("err");
+  const miss = [];
+  if(!v("name")) miss.push("お名前");
+  if(!v("d1")||!v("t1")) miss.push("第1希望の日にちと時間");
+  if(!v("d2")||!v("t2")) miss.push("第2希望の日にちと時間");
+  if(miss.length){
+    err.textContent = "「" + miss.join("」「") + "」を入力してください。";
+    err.style.display = "block"; err.scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  if(v("d1")===v("d2") && v("t1")===v("t2")){
+    err.textContent = "第1希望と第2希望は、別の日時を選んでください。";
+    err.style.display = "block"; return;
+  }
+  err.style.display = "none";
+
+  const worries = [...document.querySelectorAll("#worries input:checked")].map(c=>c.value);
+  const lines = [
+    "【肌カウンセリング予約希望】",
+    "お名前：" + v("name"),
+    "年代：" + (v("age") || "未回答"),
+    "気になること：" + (worries.length ? worries.join("、") : "未回答"),
+    "第1希望：" + v("d1") + " " + v("t1"),
+    "第2希望：" + v("d2") + " " + v("t2"),
+  ];
+  if(v("memo")) lines.push("ご質問・ご要望：" + v("memo"));
+  lines.push("（ポップアップショップのサンプルから）");
+  const text = lines.join("\n");
+
+  // LINE公式アカウントのトークを開き、文章を入れた状態にする
+  location.href = "https://line.me/R/oaMessage/" + encodeURIComponent(lineId) + "/?" + encodeURIComponent(text);
+});
+</script>
+</body>
+</html>
